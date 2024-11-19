@@ -1,15 +1,16 @@
 {
   "expo": {
-    "name": "aora",
-    "slug": "aora",
+    "name": "quran_tutor",
+    "slug": "quran_tutor",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "aora",
+    "scheme": "quran_tutor",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "package": "com.essex.qurantutor"
     },
     "android": {
       "adaptiveIcon": {
