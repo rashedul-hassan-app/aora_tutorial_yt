@@ -18,6 +18,7 @@ import FormField from "../../components/FormField";
 import { MultiSelectComponent } from "../../components/ui/Dropdown";
 import CustomRadioButton from "../../components/ui/CustomRadioButton";
 import CloseButton from "../../components/ui/CloseButton";
+import { handleSignUp } from "../../services/auth";
 
 const SignUp = () => {
 	const [isSubmitting, setSubmitting] = useState(false);
@@ -35,35 +36,6 @@ const SignUp = () => {
 
 	const handleLanguageChange = (selected) => {
 		setForm({ ...form, languages: selected });
-	};
-
-	const submit = async () => {
-		if (
-			!form.username ||
-			!form.email ||
-			!form.password ||
-			form.languages.length === 0
-		) {
-			Alert.alert("Error", "Please fill in all fields");
-			return;
-		}
-
-		setSubmitting(true);
-		try {
-			const result = await createUser(
-				form.email,
-				form.password,
-				form.username
-			);
-			setUser(result);
-			setIsLogged(true);
-
-			router.replace("/home");
-		} catch (error) {
-			Alert.alert("Error", error.message);
-		} finally {
-			setSubmitting(false);
-		}
 	};
 
 	console.log("-- form --");
@@ -131,7 +103,7 @@ const SignUp = () => {
 
 					<CustomButton
 						title="Sign Up"
-						handlePress={submit}
+						handlePress={() => handleSignUp(form, setSubmitting)}
 						containerStyles="mt-7 bg-white"
 						isLoading={isSubmitting}
 					/>

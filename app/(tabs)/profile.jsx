@@ -23,8 +23,6 @@ const Profile = () => {
 
     try {
         await signOutFn(); // Await the async `signOut` function
-        console.log('Executed log out func');
-        Alert.alert('Logout successful');
         router.replace("/sign-in");
     } catch (error) {
         console.error("Error during logout:", error);

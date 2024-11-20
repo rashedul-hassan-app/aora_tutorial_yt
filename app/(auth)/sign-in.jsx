@@ -6,57 +6,23 @@ import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 import { images } from "../../constants";
 import CustomButton from "../../components/ui/CustomButton";
 import FormField from "../../components/FormField";
-import axios from "axios";
 import useAuthStore from "../../store/authStore";
-import { serverDetails } from "../../constants";
-
-// import { getCurrentUser, signIn } from "../../lib/appwrite";
-// import { useGlobalContext } from "../../context/GlobalProvider";
+import { handleSignIn } from "../../services/auth";
+import CloseButton from "../../components/ui/CloseButton";
 
 const SignIn = () => {
 	const signInFn = useAuthStore((state) => state.signIn);
 
-	// const { setUser, setIsLogged } = useGlobalContext();
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [form, setForm] = useState({
-		username: "",
+		email: "",
 		password: "",
 	});
-
-	const handleSignIn = async () => {
-		if (form.username === "" || form.password === "") {
-			Alert.alert("Error", "Please fill in all fields");
-			return;
-		}
-
-		setSubmitting(true);
-
-		try {
-			const response =  await axios.post(`${serverDetails.apiEndpoint}/signin`, form, {
-				headers: { 'Content-Type': 'application/json' }
-			});
-
-			if (response.status === 200) {
-				const { token } = response.data;
-				signInFn(token, form.username);
-				Alert.alert("Success", "User signed in successfully");
-				router.replace("/home");
-			} else {
-				Alert.alert("Error!", "Email/Password is wrong");
-			}
-		} catch (error) {
-			console.error("Error during signing in: ", error.message);
-			Alert.alert("Error", "Unable to sign in. Please check username and password and Try again!");
-		} finally {
-			setSubmitting(false);
-		}
-		
-	};
-
 
 	return (
 		<SafeAreaView className="bg-primary h-full px-2">
 			<ScrollView>
+			<CloseButton containerStyles={'absolute right-4 top-4'} handlePress={() => router.replace("/")} />
 				<View
 					className="w-full flex justify-center min-h-[85vh] px-4 my-6"
 					style={{
@@ -75,8 +41,8 @@ const SignIn = () => {
 
 					<FormField
 						title="username"
-						value={form.username}
-						handleChangeText={(e) => setForm({ ...form, username: e })}
+						value={form.email}
+						handleChangeText={(e) => setForm({ ...form, email: e })}
 						otherStyles="mt-7"
 					/>
 
@@ -88,11 +54,20 @@ const SignIn = () => {
 						}
 						otherStyles="mt-7"
 					/>
-
+					<Text className="mt-2 text-right">
+						<Link
+							href="/sign-up"
+							className="text-lg font-psemibold text-white "
+						>
+							Forgot Password?
+						</Link>
+					</Text>
 					<CustomButton
 						title="Sign In"
-						handlePress={handleSignIn}
-						containerStyles="mt-7"
+						handlePress={() =>
+							handleSignIn(form, signInFn, setSubmitting)
+						}
+						containerStyles="bg-secondary mt-7"
 						isLoading={isSubmitting}
 					/>
 
