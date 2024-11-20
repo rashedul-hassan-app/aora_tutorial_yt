@@ -6,12 +6,12 @@ import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 import { images } from "../../constants";
 import CustomButton from "../../components/ui/CustomButton";
 import FormField from "../../components/FormField";
-import useAuthStore from "../../store/authStore";
 import { handleSignIn } from "../../services/auth";
 import CloseButton from "../../components/ui/CloseButton";
+import { useAuthStore } from "../../store/authStore";
 
 const SignIn = () => {
-	const signInFn = useAuthStore((state) => state.signIn);
+	const saveSignInDataInStore = useAuthStore((state) => state.SaveSignInDataInStore);
 
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [form, setForm] = useState({
@@ -40,7 +40,7 @@ const SignIn = () => {
 					</Text>
 
 					<FormField
-						title="username"
+						title="email"
 						value={form.email}
 						handleChangeText={(e) => setForm({ ...form, email: e })}
 						otherStyles="mt-7"
@@ -65,7 +65,7 @@ const SignIn = () => {
 					<CustomButton
 						title="Sign In"
 						handlePress={() =>
-							handleSignIn(form, signInFn, setSubmitting)
+							handleSignIn(form, saveSignInDataInStore, setSubmitting)
 						}
 						containerStyles="bg-secondary mt-7"
 						isLoading={isSubmitting}

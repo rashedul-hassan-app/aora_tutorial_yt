@@ -19,11 +19,11 @@ import { MultiSelectComponent } from "../../components/ui/Dropdown";
 import CustomRadioButton from "../../components/ui/CustomRadioButton";
 import CloseButton from "../../components/ui/CloseButton";
 import { handleSignUp } from "../../services/auth";
+import { useAuthStore } from "../../store/authStore";
 
 const SignUp = () => {
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [form, setForm] = useState({
-		username: "",
 		email: "",
 		password: "",
 		userType: "student", // Default selected option
@@ -37,6 +37,10 @@ const SignUp = () => {
 	const handleLanguageChange = (selected) => {
 		setForm({ ...form, languages: selected });
 	};
+
+	const saveSignInDataInStore = useAuthStore(
+		(state) => state.SaveSignInDataInStore,
+	);
 
 	console.log("-- form --");
 	console.log(form);
@@ -103,7 +107,7 @@ const SignUp = () => {
 
 					<CustomButton
 						title="Sign Up"
-						handlePress={() => handleSignUp(form, setSubmitting)}
+						handlePress={() => handleSignUp(form, setSubmitting, saveSignInDataInStore)}
 						containerStyles="mt-7 bg-white"
 						isLoading={isSubmitting}
 					/>

@@ -1,18 +1,7 @@
 import axios from 'axios';
-import {Alert} from 'react-native';
-import {router} from 'expo-router';
 import {serverDetails} from '../../constants';
 
-export const handleSignIn = async (
-	form,
-	saveSignInDataInStore,
-	setSubmitting,
-) => {
-	if (form.email === '' || form.password === '') {
-		Alert.alert('Error', 'Please fill in all fields');
-		return;
-	}
-
+export const getProfile = async () => {
 	setSubmitting(true);
 
 	try {
@@ -26,7 +15,7 @@ export const handleSignIn = async (
 
 		if (response.status === 200) {
 			const {token} = response.data;
-			await saveSignInDataInStore(token, form.email);
+			saveSignInDataInStore(token, form.email);
 			Alert.alert('Success', 'User signed in successfully');
 			router.replace('/home');
 		} else {

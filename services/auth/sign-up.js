@@ -2,8 +2,13 @@ import axios from 'axios';
 import {Alert} from 'react-native';
 import {router} from 'expo-router';
 import {serverDetails} from '../../constants';
+import {useAuthStore} from '../../store/authStore';
 
-export const handleSignUp = async (form, setSubmitting) => {
+export const handleSignUp = async (
+	form,
+	setSubmitting,
+	saveSignInDataInStore,
+) => {
 	if (
 		form.email === '' ||
 		form.password === '' ||
@@ -26,7 +31,12 @@ export const handleSignUp = async (form, setSubmitting) => {
 
 		if (response.status === 200) {
 			Alert.alert('Success', 'Account created successfully');
-			router.replace('/sign-in');
+			if (response.data.token) {
+				console.log(response.data.token);
+
+				await saveSignInDataInStore(response.data.token, form.email);
+				router.replace('/home');
+			}
 		} else {
 			Alert.alert('Error', 'Unable to create account');
 		}

@@ -8,31 +8,33 @@ import { icons } from "../../constants";
 // import { useGlobalContext } from "../../context/GlobalProvider";
 import { EmptyState, InfoBox, VideoCard } from "../../components";
 
-import { images } from "../../constants";
-
-import useAuthStore from "../../store/authStore";
+import { handleSignOut } from "../../services/auth/sign-out";
+import { readData } from "../../utils/storage";
 
 const Profile = () => {
-  // const { user, setUser, setIsLogged } = useGlobalContext();
-  // const { data: posts } = useAppwrite(() => getUserPosts(user.$id));
-
-  const handleSignOut = async () => {
-    console.log('Triggered log out func');
-    const signOutFn = useAuthStore.getState().signOut; // Use getState() to ensure proper retrieval
-    console.log("Retrieved signOutFn:", signOutFn);
-
-    try {
-        await signOutFn(); // Await the async `signOut` function
-        router.replace("/sign-in");
-    } catch (error) {
-        console.error("Error during logout:", error);
-        Alert.alert("Error", "Something went wrong while logging out.");
-    }
-};
 
 
   return (
     <SafeAreaView className="bg-primary h-full">
+
+      <TouchableOpacity onPress={async () => {
+        const data = await readData("auth_token");
+        console.log(data);
+      }}>
+        <View>
+          <Text className="text-white">Read Localstorage Auth</Text>
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={async () => {
+        const data = await readData("quran_tutor_user_store");
+        console.log(data);
+      }}>
+      <View>
+        <Text className="text-white">Read Localstorage User</Text>
+      </View>
+      </TouchableOpacity>
+
       <FlatList
         // data={posts}
         data={[]}

@@ -1,19 +1,39 @@
 import { StatusBar } from "expo-status-bar";
 import { Image, Text, View } from "react-native";
-import { Redirect, router } from "expo-router";
+import { Redirect, SplashScreen, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
 
 import { images } from "../constants";
 import CustomButton from "../components/ui/CustomButton";
-import { useGlobalContext } from "../context/GlobalProvider";
+import { useAuthStore } from "../store/authStore";
+import { useEffect } from "react";
+import { readData } from "../utils/storage";
 
 export default function App() {
-	const { isLoading, isLoggedIn } = useGlobalContext();
+	const { isLoading, isLoggedIn, LoadAuthStateFromStore } = useAuthStore();
 
-	if (!isLoading && isLoggedIn) {
+	useEffect(() => {
+		const initializeApp = async () => {
+		  await LoadAuthStateFromStore();
+		  SplashScreen.hideAsync(); // Hide splash screen once loading is complete
+		  const savedData = await readData('auth_token');
+		  console.log('launch data')
+		  console.log(savedData);
+		};
+	
+		initializeApp();
+	  }, []);
+	
+	  if (isLoading) {
+		// Return null to ensure the splash screen remains visible until `SplashScreen.hideAsync` is called
+		return null;
+	  }
+	
+	  if (isLoggedIn) {
 		return <Redirect href="/home" />;
-	}
+	  }
+
 	return (
 		<SafeAreaView className="bg-primary h-full">
 			<ScrollView contentContainerStyle={{ height: "100%" }}>
@@ -48,7 +68,7 @@ export default function App() {
 						Connect with the words that shaped the world!
 					</Text>
 					<CustomButton
-						title="Continue with Email"
+						title="Sign In with Email"
 						handlePress={() => router.push("/sign-in")}
 						containerStyles="bg-secondary w-full mt-7"
 					/>
