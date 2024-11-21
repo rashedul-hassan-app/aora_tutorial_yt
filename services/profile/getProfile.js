@@ -1,33 +1,22 @@
 import axios from 'axios';
 import {serverDetails} from '../../constants';
 
-export const getProfile = async () => {
-	setSubmitting(true);
-
+export const getProfile = async (token) => {
 	try {
-		const response = await axios.post(
-			`${serverDetails.apiEndpoint}/signin`,
-			form,
+		const response = await axios.get(
+			`${serverDetails.apiEndpoint}/api/profile`,
 			{
-				headers: {'Content-Type': 'application/json'},
+				headers: {Authorization: `Bearer ${token}`},
 			},
 		);
 
 		if (response.status === 200) {
-			const {token} = response.data;
-			saveSignInDataInStore(token, form.email);
-			Alert.alert('Success', 'User signed in successfully');
-			router.replace('/home');
+			return response.data; // Return the profile data
 		} else {
-			Alert.alert('Error!', 'Email/Password is wrong');
+			throw new Error('Failed to fetch profile');
 		}
 	} catch (error) {
-		console.error('Error during signing in: ', error.message);
-		Alert.alert(
-			'Error',
-			'Unable to sign in. Please check email and password and Try again!',
-		);
-	} finally {
-		setSubmitting(false);
+		console.error('Error fetching profile:', error.message);
+		return null; // Return null or handle the error appropriately
 	}
 };

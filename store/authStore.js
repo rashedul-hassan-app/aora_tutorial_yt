@@ -6,32 +6,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const useAuthStore = create(
 	persist(
 		(set) => ({
-			token: null,
+			auth_token: null,
 			user: null,
 			isLoading: true,
 			isLoggedIn: false,
 
-			SaveSignInDataInStore: async (token, user) => {
-				set({token, user, isLoggedIn: true});
-				await saveData('auth_token', {token, user});
+			SaveSignInDataInStore: async (auth_token, user) => {
+				set({auth_token, user, isLoggedIn: true});
+				await saveData('auth_token', {auth_token, user});
 				console.log('data saved upon signing in');
 				const confirm = await readData('auth_token');
 				console.log('confirming saved data', confirm);
 			},
 
 			SaveSignOutDataInStore: async () => {
-				set({token: null, user: null, isLoggedIn: false});
+				set({auth_token: null, user: null, isLoggedIn: false});
 				await removeData('auth_token');
 				console.log('Zustand: Sign out function executed');
 			},
 
 			RefreshTokenDataInStore: async (newToken) => {
-				set((state) => ({...state, token: newToken}));
+				set((state) => ({...state, auth_token: newToken}));
 				const currentState = await readData('auth_token');
 				if (currentState) {
 					await saveData('auth_token', {
 						...currentState,
-						token: newToken,
+						auth_token: newToken,
 					});
 				}
 			},
@@ -41,16 +41,16 @@ export const useAuthStore = create(
 				if (authData) {
 					const parsedData = JSON.parse(authData);
 					set({
-						token: parsedData.token,
+						auth_token: parsedData.auth_token,
 						user: parsedData.user,
 						isLoading: false,
 					});
 
-					if (parsedData.token && parsedData.user) {
+					if (parsedData.auth_token && parsedData.user) {
 						set({isLoggedIn: true});
 					}
 				} else {
-					set({token: null, user: null, isLoading: false});
+					set({auth_token: null, user: null, isLoading: false});
 				}
 			},
 		}),

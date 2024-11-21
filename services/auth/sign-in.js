@@ -28,7 +28,9 @@ export const handleSignIn = async (
 			const {token} = response.data;
 			await saveSignInDataInStore(token, form.email);
 			Alert.alert('Success', 'User signed in successfully');
-			router.replace('/home');
+			setTimeout(() => {
+				router.replace('/home');
+			}, 100);
 		} else {
 			Alert.alert('Error!', 'Email/Password is wrong');
 		}

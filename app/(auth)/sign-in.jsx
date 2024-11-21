@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
+import { ActivityIndicator, StyleSheet, View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 
 import { images } from "../../constants";
 import CustomButton from "../../components/ui/CustomButton";
@@ -19,6 +19,13 @@ const SignIn = () => {
 		password: "",
 	});
 
+	if (isSubmitting) {
+		return (
+			<View style={styles.loadingContainer}>
+			  <ActivityIndicator size="large" color="orange" />
+			</View>
+		  );
+	}
 	return (
 		<SafeAreaView className="bg-primary h-full px-2">
 			<ScrollView>
@@ -89,3 +96,13 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
+const styles = StyleSheet.create({
+	loadingContainer: {
+	  flex: 1,
+	  justifyContent: 'center',
+	  alignItems: 'center',
+	  backgroundColor: '#161622', // Match the app theme
+	  opacity: 0.9,
+	},
+  });
