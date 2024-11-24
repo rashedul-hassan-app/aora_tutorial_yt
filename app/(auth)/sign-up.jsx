@@ -33,12 +33,17 @@ const SignUp = () => {
 	const [form, setForm] = useState({
 		email: "",
 		password: "",
-		userType: "student", // Default selected option
+		role: "student",
+		sex: "male",
 		languages: [], // Preferred languages (multi-select)
 	});
 
 	const handleUserTypeChange = (type) => {
-		setForm({ ...form, userType: type });
+		setForm({ ...form, role: type });
+	};
+
+	const handleSexChange = (type) => {
+		setForm({ ...form, sex: type });
 	};
 
 	const handleLanguageChange = (selected) => {
@@ -157,9 +162,35 @@ const SignUp = () => {
 							className="items-center"
 						>
 							<CustomRadioButton
-								selectedOption={form.userType}
+								selectedOption={form.role}
 								options={["student", "tutor"]}
 								onOptionChange={handleUserTypeChange}
+							/>
+						</Animated.View>
+					</View>
+
+					{/* Radio Button Group */}
+					<View className="my-5 space-y-5">
+						<Animated.Text
+							entering={FadeInUp.delay(1500)
+								.duration(600)
+								.easing(Easing.in(Easing.quad))
+								.damping(2)}
+							className="text-white mb-5"
+						>
+							Gender
+						</Animated.Text>
+						<Animated.View
+							entering={FadeInUp.delay(1600)
+								.duration(600)
+								.easing(Easing.in(Easing.quad))
+								.damping(2)}
+							className="items-center"
+						>
+							<CustomRadioButton
+								selectedOption={form.sex}
+								options={["male", "female"]}
+								onOptionChange={handleSexChange}
 							/>
 						</Animated.View>
 					</View>

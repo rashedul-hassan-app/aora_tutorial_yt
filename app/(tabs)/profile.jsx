@@ -40,6 +40,7 @@ const Profile = () => {
 	useEffect(() => {
 		if (profileData) {
 			setEditableFields({
+        sex: user?.sex || "sir/madam",
 				role: user?.role || "gg role",
 				email: user?.email || "",
 				bio: profileData.bio || "",
@@ -99,7 +100,7 @@ const Profile = () => {
 				borderColor="#444"
 			>
 				<Text fontSize="$6" color="white" fontWeight="bold">
-					Profile
+					Salam {profileData.sex === 'Male' ? ' brother' : ' sister'}
 				</Text>
         	{/* Actions */}
           <XStack
