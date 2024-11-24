@@ -11,6 +11,7 @@ export const getProfile = async (token) => {
 		);
 
 		if (response.status === 200) {
+			console.log('getProfile API sent 200');
 			return response.data; // Return the profile data
 		} else {
 			throw new Error('Failed to fetch profile');

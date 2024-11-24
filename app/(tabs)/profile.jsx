@@ -1,155 +1,279 @@
-import { router } from "expo-router";
+import React, { useState, useEffect } from "react";
+import { Alert, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
-	View,
+	YStack,
+	XStack,
+	H4,
+	Input,
+	Button,
+	Card,
+	Paragraph,
+	Separator,
 	Text,
-	Image,
-	FlatList,
-	TouchableOpacity,
-	Alert,
-} from "react-native";
-
-import { icons } from "../../constants";
-import { EmptyState, InfoBox, VideoCard } from "../../components";
-
-import { handleSignOut } from "../../services/auth/sign-out";
-import { readData } from "../../utils/storage";
-import { getProfile } from "../../services/profile/getProfile";
+} from "tamagui";
 import { useAuthStore } from "../../store/authStore";
-import { useEffect, useState } from "react";
+import { updateProfile } from "../../services/profile";
+import { MultiSelectComponent } from "../../components/ui/Dropdown";
+import { router } from "expo-router";
 
 const Profile = () => {
+	const auth_token = useAuthStore((state) => state.auth_token);
+	const profileData = useAuthStore((state) => state.profile);
+	const user = useAuthStore((state) => state.user);
+	const SaveSignOutDataInStore = useAuthStore(
+		(state) => state.SaveSignOutDataInStore
+	);
 
-  const [profileData, setProfileData] = useState();
-  const fetchProfile = async () => {
-    try {
-      // Access the token directly from the Zustand store
-      const auth_token = useAuthStore.getState().auth_token;
-      const state = useAuthStore.getState();
-      console.log(state);
-      console.log(`Token found: ${auth_token}`);
+	const [editableFields, setEditableFields] = useState({
+		role: "",
+		email: "",
+		bio: "",
+		location: "",
+		languages: [],
+		feedback: [],
+		notes: "",
+	});
+	const [editing, setEditing] = useState(true);
+	const [loading, setLoading] = useState(false);
 
-      if (auth_token) {
-        const data = await getProfile(auth_token);
-        console.log("Profile data fetched:", JSON.stringify(data));
-        setProfileData(JSON.stringify(data));
-      } else {
-        console.log("No auth token found.");
-        // router.replace("/sign-in");
-      }
-    } catch (error) {
-      console.error("Error fetching profile:", error.message);
-      Alert.alert("Error", "Failed to fetch profile data.");
-    }
-  };
-  useEffect(() => {
+	useEffect(() => {
+		if (profileData) {
+			setEditableFields({
+				role: user?.role || "gg role",
+				email: user?.email || "",
+				bio: profileData.bio || "",
+				location: profileData.location || "",
+				languages: profileData.languages || [],
+				feedback: profileData.feedback || [],
+				notes: profileData.notes || "",
+			});
+		}
+	}, [profileData]);
 
-		fetchProfile();
-	}, []); // Run only once on component mount
+	const handleSave = async () => {
+		if (!auth_token) {
+			Alert.alert(
+				"Error",
+				"Authorization token is missing. Please log in again."
+			);
+			return;
+		}
+
+		setLoading(true);
+
+		try {
+			const updatedData = { ...editableFields };
+			const updatedProfile = await updateProfile(auth_token, updatedData);
+
+			if (updatedProfile) {
+				Alert.alert("Success", "Profile updated successfully!");
+				setEditing(false);
+			} else {
+				throw new Error("Failed to update profile. Please try again.");
+			}
+		} catch (error) {
+			Alert.alert(
+				"Error",
+				error.response?.data?.message || "Failed to update profile."
+			);
+			console.error("Profile update error:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleSignOut = () => {
+		SaveSignOutDataInStore();
+		Alert.alert("Success", "You have been signed out.");
+    router.replace('/');
+	};
+
 	return (
-		<SafeAreaView className="bg-primary h-full">
-      <Text>
-        {profileData}
-      </Text>
-			<TouchableOpacity
-				onPress={async () => {
-					const data = await readData("auth_token");
-					console.log(data);
-				}}
+		<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
+			{/* Custom Header */}
+			<YStack
+				padding="$4"
+				backgroundColor="#161622"
+				borderBottomWidth={1}
+				borderColor="#444"
 			>
-				<View>
-					<Text className="text-white">Read Localstorage Auth</Text>
-				</View>
-			</TouchableOpacity>
+				<Text fontSize="$6" color="white" fontWeight="bold">
+					Profile
+				</Text>
+        	{/* Actions */}
+          <XStack
+									justifyContent="space-between"
+									marginTop="$4"
+								>
+									{editing ? (
+										<Button
+											theme="primary"
+											size="$4"
+											onPress={handleSave}
+											disabled={loading}
+										>
+											{loading
+												? "Saving..."
+												: "Save Changes"}
+										</Button>
+									) : (
+										<Button
+											theme="blue"
+											size="$4"
+											onPress={() => setEditing(true)}
+										>
+											Edit Profile
+										</Button>
+									)}
+									<Button
+										theme="red"
+										size="$4"
+										onPress={handleSignOut}
+									>
+										Sign Out
+									</Button>
+								</XStack>
+			</YStack>
 
-			<TouchableOpacity
-				onPress={async () => {
-					const data = await readData("quran_tutor_user_store");
-					console.log(data);
-				}}
-			>
-				<View>
-					<Text className="text-white">Read Localstorage User</Text>
-				</View>
-			</TouchableOpacity>
-
-
-      <TouchableOpacity
-				onPress={async () => {
-					const data = await fetchProfile();
-					console.log(data);
-				}}
-			>
-				<View>
-					<Text className="text-white">Call getprofile</Text>
-				</View>
-			</TouchableOpacity>
-
-			<FlatList
-				// data={posts}
-				data={[]}
-				keyExtractor={(item) => item.$id}
-				renderItem={({ item }) => (
-					<VideoCard
-						title={item.title}
-						thumbnail={item.thumbnail}
-						video={item.video}
-						creator={item.creator.username}
-						avatar={item.creator.avatar}
-					/>
-				)}
-				ListEmptyComponent={() => (
-					<EmptyState
-						title="No Videos Found"
-						subtitle="No videos found for this profile"
-					/>
-				)}
-				ListHeaderComponent={() => (
-					<View className="w-full flex justify-center items-center mt-6 mb-12 px-4">
-						<TouchableOpacity
-							onPress={handleSignOut}
-							className="flex w-full items-end mb-10"
+			<ScrollView>
+				<YStack gap="$4" padding="$4">
+					{profileData ? (
+						<Card
+							bordered
+							elevate
+							theme="dark"
+							backgroundColor="#161622"
 						>
-							<Text className="text-white">Signout</Text>
-							<Image
-								source={icons.logout}
-								resizeMode="contain"
-								className="w-6 h-6"
-							/>
-						</TouchableOpacity>
+							<YStack padding="$4" gap="$4">
+								{/* Role */}
+								<YStack>
+									<H4 color="white">Role</H4>
+									<Paragraph theme="alt2">
+										{editableFields.role}
+									</Paragraph>
+								</YStack>
+								{/* Role */}
+								<YStack>
+									<H4 color="white">Email</H4>
+									<Paragraph theme="alt2">
+										{editableFields.email}
+									</Paragraph>
+								</YStack>
+								<Separator />
 
-						<View className="w-16 h-16 border border-secondary rounded-lg flex justify-center items-center">
-							<Image
-								// source={{ uri: user?.avatar }}
-								className="w-[90%] h-[90%] rounded-lg"
-								resizeMode="cover"
-							/>
-						</View>
+								{/* Bio */}
+								<YStack>
+									<H4 color="white">Bio</H4>
+									<Input
+										value={editableFields.bio}
+										editable={editing}
+										onChangeText={(text) =>
+											setEditableFields((prev) => ({
+												...prev,
+												bio: text,
+											}))
+										}
+										placeholder="Tell us about yourself"
+										backgroundColor="#222"
+										borderColor="#444"
+										color="white"
+									/>
+								</YStack>
+                {/* Bio */}
+								<YStack>
+									<H4 color="white">Location</H4>
+									<Input
+										value={editableFields.location}
+										editable={editing}
+										onChangeText={(text) =>
+											setEditableFields((prev) => ({
+												...prev,
+												location: text,
+											}))
+										}
+										placeholder="Where are you"
+										backgroundColor="#222"
+										borderColor="#444"
+										color="white"
+									/>
+								</YStack>
 
-						<InfoBox
-							// title={user?.username}
-							title={"some title"}
-							containerStyles="mt-5"
-							titleStyles="text-lg"
-						/>
+             
 
-						<View className="mt-5 flex flex-row">
-							<InfoBox
-								// title={posts.length || 0}
-								title={"title here"}
-								subtitle="Posts"
-								titleStyles="text-xl"
-								containerStyles="mr-10"
-							/>
-							<InfoBox
-								title="1.2k"
-								subtitle="Followers"
-								titleStyles="text-xl"
-							/>
-						</View>
-					</View>
-				)}
-			/>
+								<Separator />
+
+							
+
+								{/* Languages */}
+								<YStack>
+									<H4 color="white">Languages</H4>
+									<MultiSelectComponent
+										selectedLanguages={
+											editableFields.languages
+										}
+										onLanguageChange={(selected) =>
+											setEditableFields((prev) => ({
+												...prev,
+												languages: selected,
+											}))
+										}
+										editable={editing}
+									/>
+								</YStack>
+
+								<Separator />
+
+								{/* Feedback */}
+								<YStack>
+									<H4 color="white">Feedback</H4>
+									{editableFields.feedback.length > 0 ? (
+										editableFields.feedback.map(
+											(feedback, index) => (
+												<Paragraph
+													key={index}
+													theme="alt2"
+												>
+													- {feedback}
+												</Paragraph>
+											)
+										)
+									) : (
+										<Paragraph theme="alt2">
+											No feedback available
+										</Paragraph>
+									)}
+								</YStack>
+
+								<Separator />
+
+								{/* Notes */}
+								<YStack>
+									<H4 color="white">Notes</H4>
+									<Input
+										value={editableFields.notes}
+										editable={editing}
+										onChangeText={(text) =>
+											setEditableFields((prev) => ({
+												...prev,
+												notes: text,
+											}))
+										}
+										placeholder="Add notes"
+										backgroundColor="#222"
+										borderColor="#444"
+										color="white"
+									/>
+								</YStack>
+
+							
+							</YStack>
+						</Card>
+					) : (
+						<Text color="white">Loading profile...</Text>
+					)}
+				</YStack>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };

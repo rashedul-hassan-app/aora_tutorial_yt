@@ -3,44 +3,37 @@ import { Image, Text, View } from "react-native";
 import { Redirect, SplashScreen, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
-
-import { images } from "../constants";
-import CustomButton from "../components/ui/CustomButton";
-import { useAuthStore } from "../store/authStore";
-import { useEffect } from "react";
-import { readData } from "../utils/storage";
 import Animated, {
 	FadeIn,
 	FadeInDown,
 	FadeInUp,
-	FadeOut,
 	Easing,
 } from "react-native-reanimated";
+import { useAuthStore } from "../store/authStore";
+import { useEffect } from "react";
+import { images } from "../constants";
+import CustomButton from "../components/ui/CustomButton";
 
 export default function App() {
-	const { isLoading, isLoggedIn, LoadAuthStateFromStore } = useAuthStore();
+	const LoadAuthStateFromStore = useAuthStore(
+		(state) => state.LoadAuthStateFromStore
+	);
+	const auth_token = useAuthStore((state) => state.auth_token);
+	const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+	const isLoading = useAuthStore((state) => state.isLoading);
 
 	useEffect(() => {
 		const initializeApp = async () => {
-			await LoadAuthStateFromStore();
-			SplashScreen.hideAsync(); // Hide splash screen once loading is complete
-			const savedData = await readData("auth_token");
-			console.log("launch data");
-			console.log(savedData);
+			await LoadAuthStateFromStore(); // Load auth state and profile
+			await SplashScreen.hideAsync(); // Hide splash screen after loading is complete
 		};
 
 		initializeApp();
 	}, []);
 
-	if (isLoading) {
-		// Return null to ensure the splash screen remains visible until `SplashScreen.hideAsync` is called
-		return null;
-	}
-
-	if (isLoggedIn) {
+	if (isLoggedIn && auth_token && !isLoading) {
 		return <Redirect href="/home" />;
 	}
-
 
 	return (
 		<SafeAreaView className="bg-primary h-full">
@@ -54,7 +47,6 @@ export default function App() {
 						className="w-[130px] h-[84px]"
 						resizeMode="contain"
 					/>
-
 					<Animated.Image
 						entering={FadeIn.duration(300).easing(
 							Easing.inOut(Easing.quad)
@@ -63,7 +55,6 @@ export default function App() {
 						className="max-w-[380px] w-full h-[298px]"
 						resizeMode="contain"
 					/>
-
 					<Animated.View
 						entering={FadeIn.delay(100)
 							.duration(500)
@@ -76,14 +67,12 @@ export default function App() {
 						</Text>
 						<Image
 							source={images.path}
-							className="w-[136px] h-[15px] absolute 
-						-bottom-4 -right-10"
+							className="w-[136px] h-[15px] absolute -bottom-4 -right-10"
 							resizeMode="contain"
 						/>
 					</Animated.View>
-
 					<Animated.Text
-						entering={FadeIn.delay(400)
+						entering={FadeIn.delay(300)
 							.duration(500)
 							.easing(Easing.in(Easing.quad))}
 						className="text-sm font-pregular text-gray-100 my-7 text-center"
@@ -92,7 +81,7 @@ export default function App() {
 						with the words that shaped the world!
 					</Animated.Text>
 					<Animated.View
-						entering={FadeInDown.delay(900)
+						entering={FadeInDown.delay(500)
 							.duration(600)
 							.easing(Easing.in(Easing.quad))}
 						className={"w-full"}
@@ -105,7 +94,7 @@ export default function App() {
 					</Animated.View>
 					<Animated.View
 						className={"w-full"}
-						entering={FadeInDown.delay(1200)
+						entering={FadeInDown.delay(700)
 							.duration(500)
 							.easing(Easing.in(Easing.quad))}
 					>
@@ -117,7 +106,6 @@ export default function App() {
 					</Animated.View>
 				</View>
 			</ScrollView>
-
 			<StatusBar backgroundColor="#161622" style="light" />
 		</SafeAreaView>
 	);

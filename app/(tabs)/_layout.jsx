@@ -1,16 +1,21 @@
 import { View, Text, Image } from "react-native";
 import { Tabs, Redirect } from "expo-router";
 import { icons } from "../../constants";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
-const TabIcon = ({ icon, color, name, focused }) => {
+const TabIcon = ({ icon, color, name, focused, isVectorIcon=false }) => {
 	return (
 		<View className="items-center justify-center gap-2">
-			<Image
-				source={icon}
-				resizeMode={"contain"}
-				tintColor={color}
-				className="w-6 h-6"
-			/>
+			{isVectorIcon ? (
+				<FontAwesome6 name="message" size={24} color={color} />
+			) : (
+				<Image
+					source={icon}
+					resizeMode={"contain"}
+					tintColor={color}
+					className="w-6 h-6"
+				/>
+			)}
 			<Text
 				className={`w-full ${focused ? 'font-psemibold' : 'font-pregular'} text-xs }`}
                 style={{ color: color }}
@@ -54,31 +59,31 @@ const TabsLayout = () => {
 					}}
 				/>
                 <Tabs.Screen
-					name="bookmark"
+					name="search"
 					options={{
-						title: "Bookmark",
+						title: "Search",
 						headerShown: false,
 						tabBarIcon: ({ color, focused }) => (
 							<TabIcon
-								icon={icons.bookmark}
+								icon={icons.search}
 								color={color}
-								name="Bookmark"
+								name="Search"
 								focused={focused}
 							/>
 						),
 					}}
 				/>
                 <Tabs.Screen
-					name="create"
+					name="messages"
 					options={{
-						title: "Create",
+						title: "Messages",
 						headerShown: false,
 						tabBarIcon: ({ color, focused }) => (
 							<TabIcon
-								icon={icons.plus}
 								color={color}
-								name="Create"
+								name="Messages"
 								focused={focused}
+								isVectorIcon={true}
 							/>
 						),
 					}}

@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { Slot, SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 // Import your global CSS file
 import "../global.css";
 import { useEffect } from 'react';
-import GlobalProvider from '../context/GlobalProvider';
+import { createTamagui,TamaguiProvider, View } from 'tamagui'
+import defaultConfig from '@tamagui/config/v3'
 
+const config = createTamagui(defaultConfig)
 // prevent autohiding splash before asset loading
 SplashScreen.preventAutoHideAsync();
 
@@ -34,14 +36,14 @@ const RootLayout = () => {
   if (!fontsLoaded && !error) return null;
 
   return (
-    <GlobalProvider>
+    <TamaguiProvider config={config}>
       <Stack>
         <Stack.Screen name="index" options={{headerShown: false}} />
         <Stack.Screen name="(auth)" options={{headerShown: false}} />
         <Stack.Screen name="(tabs)" options={{headerShown: false}} />
         <Stack.Screen name="profile" options={{headerShown: false}} />
       </Stack>
-    </GlobalProvider>
+    </TamaguiProvider>
   );
 }
 
