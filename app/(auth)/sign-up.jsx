@@ -104,7 +104,7 @@ const SignUp = () => {
 
 					<Animated.View
 						className="w-full"
-						entering={FadeInUp.delay(1100)
+						entering={FadeInUp.delay(1000)
 							.duration(600)
 							.easing(Easing.in(Easing.quad))
 							.damping(2)}
@@ -120,7 +120,7 @@ const SignUp = () => {
 					</Animated.View>
 					{/* Language Dropdown Group */}
 					<Animated.View
-						entering={FadeInUp.delay(1300)
+						entering={FadeInUp.delay(1200)
 							.duration(600)
 							.easing(Easing.in(Easing.quad))
 							.damping(2)}
@@ -141,7 +141,7 @@ const SignUp = () => {
 					{/* Radio Button Group */}
 					<View className="my-5 space-y-5">
 						<Animated.Text
-							entering={FadeInUp.delay(1600)
+							entering={FadeInUp.delay(1500)
 								.duration(600)
 								.easing(Easing.in(Easing.quad))
 								.damping(2)}
@@ -150,7 +150,7 @@ const SignUp = () => {
 							Sign up as a
 						</Animated.Text>
 						<Animated.View
-							entering={FadeInUp.delay(1900)
+							entering={FadeInUp.delay(1600)
 								.duration(600)
 								.easing(Easing.in(Easing.quad))
 								.damping(2)}
@@ -165,7 +165,7 @@ const SignUp = () => {
 					</View>
 
 					<Animated.View
-						entering={FadeInUp.delay(2100)
+						entering={FadeInUp.delay(1800)
 							.duration(600)
 							.easing(Easing.in(Easing.quad))
 							.damping(2)}
@@ -184,7 +184,7 @@ const SignUp = () => {
 						/>
 					</Animated.View>
 					<Animated.View
-						entering={FadeInUp.delay(2300)
+						entering={FadeInUp.delay(2000)
 							.duration(600)
 							.easing(Easing.in(Easing.quad))
 							.damping(2)}
