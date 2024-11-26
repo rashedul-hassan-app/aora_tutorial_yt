@@ -17,7 +17,7 @@ import { MultiSelectComponent } from "../../components/ui/Dropdown"; // Reuse yo
 import { router } from "expo-router";
 import { fetchTutorProfiles } from "../../services/search";
 import { useAuthStore } from "../../store/authStore";
-import { MediumCard } from "../../components/ui/Cards";
+import FlatListWithPagination from "../../components/ui/FlatListWithPagination";
 
 const Search = () => {
 	const auth_token = useAuthStore((state) => state.auth_token);
@@ -84,12 +84,7 @@ const Search = () => {
 						<Spinner size="large" color="$orange10" />
 					</YStack>
 				) : (
-					<FlatList
-						data={results}
-						keyExtractor={(item) => item.id}
-						renderItem={({ item }) => <MediumCard item={item} />}
-            contentContainerStyle={{ marginBottom: 250 }}
-					/>
+					<FlatListWithPagination initialResults={results}/>
 				)}
 			</YStack>
 		</SafeAreaView>

@@ -4,17 +4,19 @@ import {SafeAreaView, FlatList} from 'react-native';
 import {YStack, XStack, Text, Card, Image} from 'tamagui';
 import placeholderMaleImg from '../../../assets/images/placeholders/male-placeholder.png';
 import placeholderFemaleImg from '../../../assets/images/placeholders/female-placeholder.png';
+import genericPlaceholderImg from '../../../assets/images/placeholders/placeholder-250.png';
 
 const MediumCard = ({item}) => {
 	const getPlaceholderImage = (item) => {
-		if (
-			item.profile &&
-			item.profile.sex &&
-			item.profile.sex.toLowerCase() === 'male'
-		) {
-			return placeholderMaleImg;
+		if (item && item.sex) {
+			console.log(item.sex);
+			if (item.sex.toLowerCase() === 'male') {
+				return placeholderMaleImg;
+			} else if (item.sex.toLowerCase() === 'female') {
+				return placeholderFemaleImg;
+			}
 		}
-		return placeholderFemaleImg;
+		return genericPlaceholderImg;
 	};
 
 	return (
