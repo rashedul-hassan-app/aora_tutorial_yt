@@ -47,7 +47,6 @@ const Search = () => {
 		setLoading(true);
 		const data = await fetchTutorProfiles(auth_token, paramsToSendToApi);
 		setResults(data);
-		console.log(data);
 		setLoading(false);
 	};
 
@@ -89,6 +88,7 @@ const Search = () => {
 						data={results}
 						keyExtractor={(item) => item.id}
 						renderItem={({ item }) => <MediumCard item={item} />}
+            contentContainerStyle={{ marginBottom: 250 }}
 					/>
 				)}
 			</YStack>

@@ -17,7 +17,6 @@ const MediumCard = ({item}) => {
 		return placeholderFemaleImg;
 	};
 
-	console.log(item.profile.sex);
 	return (
 		<Card
 			padding="$4"
