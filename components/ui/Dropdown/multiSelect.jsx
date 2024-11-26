@@ -4,8 +4,9 @@ import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { languageOptions } from "../../../constants/languageOptions";
 import Entypo from "@expo/vector-icons/Entypo";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-const MultiSelectComponent = ({ selectedLanguages, onLanguageChange }) => {
+const MultiSelectComponent = ({ selectedLanguages, onLanguageChange, placeholderText}) => {
 	const [selected, setSelected] = useState([]);
 
 	const renderItem = (item) => {
@@ -29,18 +30,13 @@ const MultiSelectComponent = ({ selectedLanguages, onLanguageChange }) => {
 				data={languageOptions}
 				labelField="label"
 				valueField="value"
-				placeholder="Choose multiple"
+				placeholder={placeholderText || "Select your language"}
 				value={selectedLanguages}
 				search
 				searchPlaceholder="Search..."
 				onChange={onLanguageChange}
 				renderLeftIcon={() => (
-					<AntDesign
-						style={styles.icon}
-						color="black"
-						name="Safety"
-						size={20}
-					/>
+					<FontAwesome name="language" size={24} color="black" />
 				)}
 				renderItem={renderItem}
 				renderSelectedItem={(item, unSelect) => (
@@ -64,7 +60,7 @@ const MultiSelectComponent = ({ selectedLanguages, onLanguageChange }) => {
 export default MultiSelectComponent;
 
 const styles = StyleSheet.create({
-	container: { padding: 16 },
+	container: { padding: 0 },
 	dropdown: {
 		height: 50,
 		backgroundColor: "white",
@@ -77,7 +73,6 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.2,
 		shadowRadius: 1.41,
-
 		elevation: 2,
 	},
 	placeholderStyle: {

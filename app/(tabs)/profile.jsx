@@ -87,7 +87,7 @@ const Profile = () => {
 	const handleSignOut = () => {
 		SaveSignOutDataInStore();
 		Alert.alert("Success", "You have been signed out.");
-    router.replace('/');
+    router.replace('/sign-in');
 	};
 
 	return (
