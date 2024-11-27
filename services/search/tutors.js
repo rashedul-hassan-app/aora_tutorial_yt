@@ -16,6 +16,8 @@ export const fetchTutorProfiles = async (token, searchParams) => {
 				// Append single key-value pairs
 				params.append(key, value);
 			}
+			console.log(params);
+			console.log(searchParams);
 		});
 
 		const response = await axios.get(

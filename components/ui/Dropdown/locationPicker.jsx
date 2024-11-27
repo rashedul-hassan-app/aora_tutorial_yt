@@ -1,103 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import { YStack, XStack, Button, Sheet, ScrollView, Text, Input } from 'tamagui';
-// import countries from '../../../constants/json/countriesminified.json'; // Import country data
-import countries from '../../../constants/json/countriesAndEmoji.json'; // Import country data
+import React, { useState } from "react";
+import { Text, Button, View, StyleSheet, Image } from "react-native";
+import CountryPicker from "react-native-country-picker-modal";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
-  const LocationPicker = ({ selectedCountry, onCountryChange, editable = true }) => {
-  const [open, setOpen] = useState(false);
-  const [filteredCountries, setFilteredCountries] = useState(countries);
-  const [searchText, setSearchText] = useState('');
+const LocationPicker = ({ onCountryChange }) => {
+	const [visible, setVisible] = useState(false);
+	const [selectedCountry, setSelectedCountry] = useState();
 
-  // useEffect(() => {
-  //   const updated = [];
-  //   countries.map((item) => {
-  //     const filteredName = item.name;
-  //     const filteredEmoji = item.emoji;
-  //     updated.push({ name: filteredName, emoji: filteredEmoji });
-  //   } );
-  //   console.log(updated);
-  // }, []);
 
-  useEffect(() => {
-    if (searchText === '') {
-      setFilteredCountries(countries);
-    } else {
-      setFilteredCountries(
-        countries.filter((country) =>
-          country.name.toLowerCase().includes(searchText.toLowerCase())
-        )
-      );
-    }
-  }, [searchText]);
+	const handleSelect = (country) => {
+		const countryName = country.name; // Extract country name
+		console.log("Selected Country:", country);
+		onCountryChange(countryName); // Pass it to the parent
+		setSelectedCountry(countryName);
+		setVisible(false); // Close the modal after selection
+	};
 
-  const handleCountrySelect = (country) => {
-    onCountryChange(country);
-    setOpen(false);
-  };
+	const toggleModal = () => {
+		setVisible(!visible);
+	};
 
-  return (
-    <YStack gap="$4">
-      {/* Display selected country */}
-      <XStack alignItems="center">
-        <Text color="white">Selected Country: </Text>
-        <Text color="white" fontWeight="bold">
-          {selectedCountry ? `${selectedCountry.emoji} ${selectedCountry.name}` : 'None'}
-        </Text>
-      </XStack>
+	const clearSelection = () => {
+		onCountryChange('');
+		setSelectedCountry('');
+	}
 
-      {/* Open dropdown button */}
-      <Button
-        theme="blue"
-        size="$4"
-        onPress={() => editable && setOpen(true)}
-        disabled={!editable}
-      >
-        {selectedCountry ? 'Change Country' : 'Select Country'}
-      </Button>
-
-      {/* Country picker modal */}
-      <Sheet
-        modal
-        open={open}
-        onOpenChange={setOpen}
-        snapPoints={[90]}
-        dismissOnSnapToBottom
-        animation="smooth"
-      >
-        <YStack padding="$4" gap="$4" backgroundColor="#161622">
-          {/* Search input */}
-          <Input
-            placeholder="Search country"
-            value={searchText}
-            onChangeText={setSearchText}
-            borderColor="#444"
-            color="white"
-            backgroundColor="#222"
-            borderRadius="$4"
-          />
-
-          {/* Scrollable country list */}
-          <ScrollView height={400}>
-            {filteredCountries.map((country) => (
-              <Button
-                key={country.name}
-                justifyContent="flex-start"
-                backgroundColor="#222"
-                color="white"
-                onPress={() => handleCountrySelect(country)}
-                marginBottom="$2"
-              >
-                <XStack gap="$2" alignItems="center">
-                  <Text>{country.emoji}</Text>
-                  <Text>{country.name}</Text>
-                </XStack>
-              </Button>
-            ))}
-          </ScrollView>
-        </YStack>
-      </Sheet>
-    </YStack>
-  );
+	return (
+		<View className="-mb-6">
+			<View style={styles.locationButton}>
+			<FontAwesome5 name="map-marker-alt" size={20} color="blue" />
+				<Button title={selectedCountry || "Filter by Country"} onPress={toggleModal} />
+			</View>
+				{selectedCountry && <Text className="pt-2 text-center" onPress={clearSelection} color="gray"> Remove Location</Text>}
+			<CountryPicker
+				onSelect={handleSelect}
+				preferredCountries={["BD", "GB", "US", "-" ]}
+				withFilter
+				withFlag
+				withCountryNameButton={true}
+				excludeCountries={["IL"]}
+				visible={visible} // Control visibility here
+				onClose={() => setVisible(false)} // Close the modal when dismissed
+				placeholder={""}
+			/>
+		</View>
+	);
 };
 
 export default LocationPicker;
+
+
+const styles = StyleSheet.create({
+	locationButton: {
+		marginHorizontal: 4,
+		width: "90%",
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		padding: 4,
+		backgroundColor: 'white',
+		borderRadius: 10,
+		boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)',
+		height: 50,
+	}
+});

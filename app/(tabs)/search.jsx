@@ -7,13 +7,16 @@ import {
 	Button,
 	Text,
 	Separator,
-  Spinner,
+	Spinner,
 	Card,
 	Image,
-  H5,
+	H5,
 } from "tamagui";
 import { Search as SearchIcon } from "@tamagui/lucide-icons";
-import { MultiSelectComponent } from "../../components/ui/Dropdown"; // Reuse your existing dropdown component
+import {
+	LocationPicker,
+	MultiSelectComponent,
+} from "../../components/ui/Dropdown"; // Reuse your existing dropdown component
 import { router } from "expo-router";
 import { fetchTutorProfiles } from "../../services/search";
 import { useAuthStore } from "../../store/authStore";
@@ -63,11 +66,21 @@ const Search = () => {
 					borderColor="gray"
 					borderRadius="$2"
 				/>
-				<MultiSelectComponent
-					selectedLanguages={selectedLanguages}
-					onLanguageChange={setSelectedLanguages}
-					placeholderText={" Filter by language"}
-				/>
+				<View className="flex-row gap-4">
+					<View className="w-1/2">
+						<MultiSelectComponent
+							selectedLanguages={selectedLanguages}
+							onLanguageChange={setSelectedLanguages}
+							placeholderText={"Filter Language"}
+						/>
+					</View>
+					<View className="w-1/2">
+						<LocationPicker
+							onCountryChange={setLocation}
+						/>
+					</View>
+				</View>
+
 				<Button
 					icon={<SearchIcon size="$1" />}
 					onPress={handleSearch}
@@ -79,12 +92,16 @@ const Search = () => {
 				</Button>
 				<Separator borderWidth={1} borderColor="lightgray" />
 				{isLoading ? (
-					<YStack paddingTop="$5" alignSelf="center" aignItems="center">
-						<H5 >Loading...</H5>
+					<YStack
+						paddingTop="$5"
+						alignSelf="center"
+						aignItems="center"
+					>
+						<H5>Loading...</H5>
 						<Spinner size="large" color="$orange10" />
 					</YStack>
 				) : (
-					<FlatListWithPagination initialResults={results}/>
+					<FlatListWithPagination initialResults={results} />
 				)}
 			</YStack>
 		</SafeAreaView>

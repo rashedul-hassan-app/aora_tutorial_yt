@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
 		elevation: 2,
 	},
 	placeholderStyle: {
+		paddingLeft: 16,
 		fontSize: 16,
 	},
 	selectedTextStyle: {
