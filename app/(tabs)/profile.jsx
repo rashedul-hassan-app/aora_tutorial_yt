@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, ScrollView } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
 	YStack,
@@ -14,7 +14,10 @@ import {
 } from "tamagui";
 import { useAuthStore } from "../../store/authStore";
 import { updateProfile } from "../../services/profile";
-import { MultiSelectComponent } from "../../components/ui/Dropdown";
+import {
+	LocationPicker,
+	MultiSelectComponent,
+} from "../../components/ui/Dropdown";
 import { router } from "expo-router";
 
 const Profile = () => {
@@ -40,7 +43,7 @@ const Profile = () => {
 	useEffect(() => {
 		if (profileData) {
 			setEditableFields({
-        sex: user?.sex || "sir/madam",
+				sex: user?.sex || "sir/madam",
 				role: user?.role || "gg role",
 				email: user?.email || "",
 				bio: profileData.bio || "",
@@ -87,54 +90,45 @@ const Profile = () => {
 	const handleSignOut = () => {
 		SaveSignOutDataInStore();
 		Alert.alert("Success", "You have been signed out.");
-    router.replace('/sign-in');
+		router.replace("/sign-in");
 	};
 
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
 			{/* Custom Header */}
 			<YStack
 				padding="$4"
-				backgroundColor="#161622"
+				backgroundColor="#fff"
 				borderBottomWidth={1}
 				borderColor="#444"
 			>
-				<Text fontSize="$6" color="white" fontWeight="bold">
-					Salam {profileData.sex === 'Male' ? ' brother' : ' sister'}
+				<Text fontSize="$6" color="black" fontWeight="bold">
+					Salam {profileData.sex === "Male" ? " brother" : " sister"}
 				</Text>
-        	{/* Actions */}
-          <XStack
-									justifyContent="space-between"
-									marginTop="$4"
-								>
-									{editing ? (
-										<Button
-											theme="primary"
-											size="$4"
-											onPress={handleSave}
-											disabled={loading}
-										>
-											{loading
-												? "Saving..."
-												: "Save Changes"}
-										</Button>
-									) : (
-										<Button
-											theme="blue"
-											size="$4"
-											onPress={() => setEditing(true)}
-										>
-											Edit Profile
-										</Button>
-									)}
-									<Button
-										theme="red"
-										size="$4"
-										onPress={handleSignOut}
-									>
-										Sign Out
-									</Button>
-								</XStack>
+				{/* Actions */}
+				<XStack justifyContent="space-between" marginTop="$4">
+					{editing ? (
+						<Button
+							theme="primary"
+							size="$4"
+							onPress={handleSave}
+							disabled={loading}
+						>
+							{loading ? "Saving..." : "Save Changes"}
+						</Button>
+					) : (
+						<Button
+							theme="blue"
+							size="$4"
+							onPress={() => setEditing(true)}
+						>
+							Edit Profile
+						</Button>
+					)}
+					<Button theme="red" size="$4" onPress={handleSignOut}>
+						Sign Out
+					</Button>
+				</XStack>
 			</YStack>
 
 			<ScrollView>
@@ -144,19 +138,19 @@ const Profile = () => {
 							bordered
 							elevate
 							theme="dark"
-							backgroundColor="#161622"
+							backgroundColor="#fffd"
 						>
 							<YStack padding="$4" gap="$4">
 								{/* Role */}
 								<YStack>
-									<H4 color="white">Role</H4>
+									<H4 color="black">Role</H4>
 									<Paragraph theme="alt2">
 										{editableFields.role}
 									</Paragraph>
 								</YStack>
 								{/* Role */}
 								<YStack>
-									<H4 color="white">Email</H4>
+									<H4 color="black">Email</H4>
 									<Paragraph theme="alt2">
 										{editableFields.email}
 									</Paragraph>
@@ -165,7 +159,7 @@ const Profile = () => {
 
 								{/* Bio */}
 								<YStack>
-									<H4 color="white">Bio</H4>
+									<H4 color="black">Bio</H4>
 									<Input
 										value={editableFields.bio}
 										editable={editing}
@@ -176,39 +170,32 @@ const Profile = () => {
 											}))
 										}
 										placeholder="Tell us about yourself"
-										backgroundColor="#222"
+										backgroundColor="#fff"
 										borderColor="#444"
-										color="white"
+										color="black"
 									/>
 								</YStack>
-                {/* Bio */}
+								{/* Bio */}
 								<YStack>
-									<H4 color="white">Location</H4>
-									<Input
-										value={editableFields.location}
-										editable={editing}
-										onChangeText={(text) =>
-											setEditableFields((prev) => ({
-												...prev,
-												location: text,
-											}))
-										}
-										placeholder="Where are you"
-										backgroundColor="#222"
-										borderColor="#444"
-										color="white"
-									/>
+									<H4 color="black">Location</H4>
+									<View className="align-center pr-2 pt-1">
+										<LocationPicker
+											placeholder={
+												"Where are you located"
+											}
+											onCountryChange={(text) => {
+												setEditing(true);
+												setEditableFields((prev) => ({
+													...prev,
+													location: text,
+												}));
+											}}
+										/>
+									</View>
 								</YStack>
-
-             
-
-								<Separator />
-
-							
-
+		
 								{/* Languages */}
 								<YStack>
-									<H4 color="white">Languages</H4>
 									<MultiSelectComponent
 										selectedLanguages={
 											editableFields.languages
@@ -227,7 +214,7 @@ const Profile = () => {
 
 								{/* Feedback */}
 								<YStack>
-									<H4 color="white">Feedback</H4>
+									<H4 color="black">Feedback</H4>
 									{editableFields.feedback.length > 0 ? (
 										editableFields.feedback.map(
 											(feedback, index) => (
@@ -250,7 +237,7 @@ const Profile = () => {
 
 								{/* Notes */}
 								<YStack>
-									<H4 color="white">Notes</H4>
+									<H4 color="black">Notes</H4>
 									<Input
 										value={editableFields.notes}
 										editable={editing}
@@ -261,17 +248,15 @@ const Profile = () => {
 											}))
 										}
 										placeholder="Add notes"
-										backgroundColor="#222"
+										backgroundColor="#fff"
 										borderColor="#444"
-										color="white"
+										color="black"
 									/>
 								</YStack>
-
-							
 							</YStack>
 						</Card>
 					) : (
-						<Text color="white">Loading profile...</Text>
+						<Text color="black">Loading profile...</Text>
 					)}
 				</YStack>
 			</ScrollView>

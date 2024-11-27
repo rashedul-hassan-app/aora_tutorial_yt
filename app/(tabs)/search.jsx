@@ -74,7 +74,7 @@ const Search = () => {
 							placeholderText={"Filter Language"}
 						/>
 					</View>
-					<View className="w-1/2">
+					<View className="w-1/2 pr-6">
 						<LocationPicker
 							onCountryChange={setLocation}
 						/>

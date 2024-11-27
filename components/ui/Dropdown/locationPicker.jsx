@@ -3,7 +3,7 @@ import { Text, Button, View, StyleSheet, Image } from "react-native";
 import CountryPicker from "react-native-country-picker-modal";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
-const LocationPicker = ({ onCountryChange }) => {
+const LocationPicker = ({ onCountryChange, placeholder="Filter by Country" }) => {
 	const [visible, setVisible] = useState(false);
 	const [selectedCountry, setSelectedCountry] = useState();
 
@@ -29,7 +29,7 @@ const LocationPicker = ({ onCountryChange }) => {
 		<View className="-mb-6">
 			<View style={styles.locationButton}>
 			<FontAwesome5 name="map-marker-alt" size={20} color="blue" />
-				<Button title={selectedCountry || "Filter by Country"} onPress={toggleModal} />
+				<Button color="rgba(0,0,0,0.8)" title={selectedCountry || placeholder} onPress={toggleModal} />
 			</View>
 				{selectedCountry && <Text className="pt-2 text-center" onPress={clearSelection} color="gray"> Remove Location</Text>}
 			<CountryPicker
@@ -41,7 +41,7 @@ const LocationPicker = ({ onCountryChange }) => {
 				excludeCountries={["IL"]}
 				visible={visible} // Control visibility here
 				onClose={() => setVisible(false)} // Close the modal when dismissed
-				placeholder={""}
+				placeholder={''}
 			/>
 		</View>
 	);
@@ -53,7 +53,7 @@ export default LocationPicker;
 const styles = StyleSheet.create({
 	locationButton: {
 		marginHorizontal: 4,
-		width: "90%",
+		width: "100%",
 		display: "flex",
 		flexDirection: "row",
 		justifyContent: "center",
@@ -61,7 +61,8 @@ const styles = StyleSheet.create({
 		padding: 4,
 		backgroundColor: 'white',
 		borderRadius: 10,
-		boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)',
-		height: 50,
+		boxShadow: '0 1 5px rgba(0, 0, 0, 0.2)',
+		height: 48,
+		color: 'black',
 	}
 });
