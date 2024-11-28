@@ -19,6 +19,7 @@ import {
 	MultiSelectComponent,
 } from "../../components/ui/Dropdown";
 import { router } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Profile = () => {
 	const auth_token = useAuthStore((state) => state.auth_token);
@@ -109,10 +110,20 @@ const Profile = () => {
 				<XStack justifyContent="space-between" marginTop="$4">
 					{editing ? (
 						<Button
-							theme="primary"
+							icon={
+								<MaterialIcons
+									name="save"
+									size={20}
+									color="white"
+								/>
+							}
+							theme="blue"
+							backgroundColor="#faa"
 							size="$4"
 							onPress={handleSave}
 							disabled={loading}
+							color="black"
+							elevation={"$2"}
 						>
 							{loading ? "Saving..." : "Save Changes"}
 						</Button>
@@ -125,7 +136,19 @@ const Profile = () => {
 							Edit Profile
 						</Button>
 					)}
-					<Button theme="red" size="$4" onPress={handleSignOut}>
+					<Button
+						theme="red"
+						elevation={"$2"}
+						iconAfter={
+							<MaterialIcons
+								name="logout"
+								size={20}
+								color="black"
+							/>
+						}
+						size="$4"
+						onPress={handleSignOut}
+					>
 						Sign Out
 					</Button>
 				</XStack>
@@ -138,12 +161,12 @@ const Profile = () => {
 							bordered
 							elevate
 							theme="dark"
-							backgroundColor="#fffd"
+							backgroundColor="#eee"
 						>
 							<YStack padding="$4" gap="$4">
 								{/* Role */}
 								<YStack>
-									<H4 color="black">Role</H4>
+									<H4 color="black">Account Type</H4>
 									<Paragraph theme="alt2">
 										{editableFields.role}
 									</Paragraph>
@@ -155,8 +178,26 @@ const Profile = () => {
 										{editableFields.email}
 									</Paragraph>
 								</YStack>
-								<Separator />
 
+
+								{/* Location */}
+								<YStack>
+									<H4 color="black">Location</H4>
+									<View className="align-center pr-2 pt-1">
+										<LocationPicker
+											placeholder={
+												"Where are you located"
+											}
+											onCountryChange={(text) => {
+												setEditing(true);
+												setEditableFields((prev) => ({
+													...prev,
+													location: text,
+												}));
+											}}
+										/>
+									</View>
+								</YStack>
 								{/* Bio */}
 								<YStack>
 									<H4 color="black">Bio</H4>
@@ -175,25 +216,7 @@ const Profile = () => {
 										color="black"
 									/>
 								</YStack>
-								{/* Bio */}
-								<YStack>
-									<H4 color="black">Location</H4>
-									<View className="align-center pr-2 pt-1">
-										<LocationPicker
-											placeholder={
-												"Where are you located"
-											}
-											onCountryChange={(text) => {
-												setEditing(true);
-												setEditableFields((prev) => ({
-													...prev,
-													location: text,
-												}));
-											}}
-										/>
-									</View>
-								</YStack>
-		
+
 								{/* Languages */}
 								<YStack>
 									<MultiSelectComponent

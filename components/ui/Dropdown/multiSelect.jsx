@@ -30,7 +30,7 @@ const MultiSelectComponent = ({ selectedLanguages, onLanguageChange, placeholder
 				data={languageOptions}
 				labelField="label"
 				valueField="value"
-				placeholder={placeholderText || "Select your language"}
+				placeholder={placeholderText || "Select your languages"}
 				value={selectedLanguages}
 				search
 				searchPlaceholder="Search..."

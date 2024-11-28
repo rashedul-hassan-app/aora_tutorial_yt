@@ -5,8 +5,12 @@ import placeholderMaleImg from '../../../assets/images/placeholders/male-placeho
 import placeholderFemaleImg from '../../../assets/images/placeholders/female-placeholder.png';
 import genericPlaceholderImg from '../../../assets/images/placeholders/placeholder-250.png';
 import {ChevronRight} from '@tamagui/lucide-icons';
+import {router} from 'expo-router';
+import {useSearchStore} from '../../../store/useSearchStore';
 
 const MediumCard = ({item}) => {
+	const setSelectedTutor = useSearchStore((state) => state.setSelectedTutor);
+
 	const getPlaceholderImage = (item) => {
 		if (item && item.sex) {
 			console.log(item.sex);
@@ -19,6 +23,11 @@ const MediumCard = ({item}) => {
 		return genericPlaceholderImg;
 	};
 
+	const handleCardPress = (tutor) => {
+		setSelectedTutor(tutor);
+		router.push('/screens/searchProfile');
+	};
+
 	return (
 		<Card
 			padding="$4"
@@ -28,6 +37,7 @@ const MediumCard = ({item}) => {
 			borderStyle="solid"
 			borderWidth={1}
 			borderColor={'orange'}
+			onPress={() => handleCardPress(item)}
 		>
 			<XStack gap="$3" alignItems="center" justifyContent="space-between">
 				<XStack gap="$5" alignItems="center">

@@ -21,8 +21,10 @@ import { router } from "expo-router";
 import { fetchTutorProfiles } from "../../services/search";
 import { useAuthStore } from "../../store/authStore";
 import FlatListWithPagination from "../../components/ui/FlatListWithPagination";
+import { useSearchStore } from "../../store/useSearchStore";
 
 const Search = () => {
+	const setSearchResults = useSearchStore((state) => state.setSearchResults);
 	const auth_token = useAuthStore((state) => state.auth_token);
 
 	const [query, setQuery] = useState("");
@@ -50,6 +52,7 @@ const Search = () => {
 		setLoading(true);
 		const data = await fetchTutorProfiles(auth_token, paramsToSendToApi);
 		setResults(data);
+		setSearchResults(data);
 		setLoading(false);
 	};
 
