@@ -20,6 +20,7 @@ import { useRouter } from "expo-router";
 import { useSearchStore } from "../../store/useSearchStore";
 import { getPlaceholderImage } from "../../lib/getPlaceholderImage";
 import { languageOptions } from "../../constants/languageOptions";
+import { SimpleCarousel } from "../../components/ui/Carousel";
 
 const SearchProfile = () => {
 	const router = useRouter();
@@ -62,7 +63,11 @@ const SearchProfile = () => {
 
 					{/* Languages & Location */}
 					<XStack justifyContent="center" gap="$5">
-						<YStack  alignItems="center" paddingTop="$3" color="black">
+						<YStack
+							alignItems="center"
+							paddingTop="$3"
+							color="black"
+						>
 							<H5>Languages</H5>
 							<YStack padding="$3">
 								{tutor.profile.languages.map((item, index) => {
@@ -91,16 +96,24 @@ const SearchProfile = () => {
 								})}
 							</YStack>
 						</YStack>
-                        <YStack  alignItems="center"  padding="$3" >
-                        
-                        {tutor.profile?.location && (
-                            <>
-                                <H5>Location</H5>
-                                <YStack padding="$3"><Text>{tutor.profile.location}</Text></YStack>
-                            </>
-                        )}
-                        </YStack>
+						<YStack alignItems="center" padding="$3">
+							{tutor.profile?.location && (
+								<>
+									<H5>Location</H5>
+									<YStack padding="$3">
+										<Text>{tutor.profile.location}</Text>
+									</YStack>
+								</>
+							)}
+						</YStack>
 					</XStack>
+					{/* Feedback */}
+					<YStack alignItems="center">
+						<H5 padding="$2">
+							FEEDBACK
+						</H5>
+						<SimpleCarousel data={tutor.profile.feedback} />
+					</YStack>
 				</YStack>
 			</ScrollView>
 		</SafeAreaView>
